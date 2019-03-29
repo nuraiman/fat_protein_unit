@@ -6,13 +6,6 @@
 #include <locale>
 //#include "fat_protein_unit.hpp"
 
-template <class charT, charT sep>
-class punct_facet: public std::numpunct<charT> {
-protected:
-    charT do_decimal_point() const { return sep; }
-};
-
-
 int main()
 {
 /*FPU caluclation library
@@ -51,8 +44,13 @@ for (int i = 0; i < 24; ++i)
 
 time_t now = time(0);
 tm *ltm = localtime(&now);
+std::locale loc;
 //TODO automatically detect , or .
-std::cin.imbue(std::locale(std::cin.getloc(), new punct_facet<char, ','>));
+loc = std::locale (loc, "", std::locale::ctype);; //("it_IT.UTF8");
+
+
+std::cin.imbue(loc);
+std::cout.imbue(loc);
 
 //TODO remake with a templatized function
 while (output_error==true)
@@ -126,7 +124,7 @@ output_error = true;
 while (output_error==true)
 {
     std::cout << " Level of glicemia in mg/dl: " << std::endl;
-    if (!(std::cin >> glicemia) or glicemia <= 0 )
+    if (!(std::cin >> glicemia) or glicemia <= 10 or glicemia > 650)
     {
         output_error = true;
         std::cout << "Please enter integer positive numbers only." << std::endl;
@@ -138,7 +136,7 @@ while (output_error==true)
         output_error = false;
     }
 }
-std::cout.imbue(std::locale(std::cout.getloc(), new punct_facet<char, ','>));
+
 std::cout << " =========================================================== " << std::endl;
 std::cout << " Input data:" << std::endl;
 std::cout << " =========================================================== " << std::endl;
