@@ -12,14 +12,12 @@ int main()
 
 */
 
-//TODO replace sensitivity and ratio_ins_carb with a vector of 24 elements (every 30 min)
-//TODO calculate insulin based of the current time with the current sensitivity and ratio_ins_carb
 //const double time_of_ins = 240.;      // min - minutes of duration of insulin in the blood
 //TODO read from json/xml file
 //TODO make it const
 std::vector<int> sensitivity (24);      // mg/dl - per unit 
-std::vector<double> ratio_ins_carb (24);    // gr/U - gr of sugar reduced by one unit of insulin
-std::vector<double> ratio_ins_fp_carb (24);   // ratio_ins_fp_carb = ratio_ins_carb / 2
+std::vector<double> ratio_ins_carb (24.);    // gr/U - gr of sugar reduced by one unit of insulin
+std::vector<double> ratio_ins_fp_carb (24.);   // ratio_ins_fp_carb = ratio_ins_carb / 2
 
 double fpu = 0.;                      // unit of fat and proteins 
 double carbohydrate = 0.;             // gr of carbohydrates
@@ -45,7 +43,7 @@ for (int i = 0; i < 24; ++i)
 time_t now = time(0);
 tm *ltm = localtime(&now);
 std::locale loc;
-//TODO automatically detect , or .
+//TODO set the default to italian
 loc = std::locale (loc, "", std::locale::ctype);; //("it_IT.UTF8");
 
 
