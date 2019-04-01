@@ -1,3 +1,6 @@
+// copyright Nur Aiman Fadel - nuraiman@gmail.com
+// License GPL 3.0
+
 #include <iostream>
 #include <limits>
 #include <iomanip>
