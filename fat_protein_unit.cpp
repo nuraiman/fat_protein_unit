@@ -4,6 +4,8 @@
 #include <vector>
 #include <ctime>
 #include <locale>
+#include <fstream>
+
 //#include "fat_protein_unit.hpp"
 
 int main()
@@ -15,6 +17,9 @@ int main()
 //const double time_of_ins = 240.;      // min - minutes of duration of insulin in the blood
 //TODO read from json/xml file
 //TODO make it const
+
+std::ifstream infile("settings.config");
+
 std::vector<int> sensitivity (24);      // mg/dl - per unit 
 std::vector<double> ratio_ins_carb (24.);    // gr/U - gr of sugar reduced by one unit of insulin
 std::vector<double> ratio_ins_fp_carb (24.);   // ratio_ins_fp_carb = ratio_ins_carb / 2
