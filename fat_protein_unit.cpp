@@ -13,12 +13,34 @@ int main()
 /*FPU caluclation library
 
 */
+time_t now = time(0);
+tm *ltm = localtime(&now);
+std::locale loc;
+//TODO set the default to italian
+loc = std::locale (loc, "", std::locale::ctype);; //("it_IT.UTF8");
+
 
 //const double time_of_ins = 240.;      // min - minutes of duration of insulin in the blood
 //TODO read from json/xml file
 //TODO make it const
+std::ifstream infile("settings.config", std::ifstream::in);
+if ( !infile ) {
+    std::cerr << "not found the settings file!" << std::endl;
+    exit(127);
+}
+else{
+    infile.imbue(loc);
+    char c = infile.get();
+      while (infile.good()) {
+        //std::cout << c;
+        c = infile.get();
+        //check if number or not and store it
+    }
+    infile.close();
+}
+std::cin.imbue(loc);
+std::cout.imbue(loc);
 
-std::ifstream infile("settings.config");
 
 std::vector<int> sensitivity (24);      // mg/dl - per unit 
 std::vector<double> ratio_ins_carb (24.);    // gr/U - gr of sugar reduced by one unit of insulin
@@ -45,15 +67,10 @@ for (int i = 0; i < 24; ++i)
     sensitivity[i]=100;
 }
 
-time_t now = time(0);
-tm *ltm = localtime(&now);
-std::locale loc;
-//TODO set the default to italian
-loc = std::locale (loc, "", std::locale::ctype);; //("it_IT.UTF8");
 
 
-std::cin.imbue(loc);
-std::cout.imbue(loc);
+
+
 
 //TODO remake with a templatized function
 while (output_error==true)
@@ -62,7 +79,7 @@ while (output_error==true)
     if (!(std::cin >> carbohydrate) or carbohydrate < 0. )
     {
         output_error = true;
-        std::cout << "Please enter positive numbers only." << std::endl;
+        std::cerr << "Please enter positive numbers only." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -79,7 +96,7 @@ while (output_error==true)
     if (!(std::cin >> protein) or protein < 0. )
     {
         output_error = true;
-        std::cout << "Please enter positive numbers only." << std::endl;
+        std::cerr << "Please enter positive numbers only." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -96,7 +113,7 @@ while (output_error==true)
     if (!(std::cin >> fat) or fat < 0. )
     {
         output_error = true;
-        std::cout << "Please enter positive numbers only." << std::endl;
+        std::cerr << "Please enter positive numbers only." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -113,7 +130,7 @@ while (output_error==true)
     if (!(std::cin >> fiber) or fiber < 0. )
     {
         output_error = true;
-        std::cout << "Please enter positive numbers only." << std::endl;
+        std::cerr << "Please enter positive numbers only." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
@@ -130,7 +147,7 @@ while (output_error==true)
     if (!(std::cin >> glicemia) or glicemia <= 10 or glicemia > 650)
     {
         output_error = true;
-        std::cout << "Please enter integer positive numbers only." << std::endl;
+        std::cerr << "Please enter integer positive numbers only." << std::endl;
         std::cin.clear();
         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
