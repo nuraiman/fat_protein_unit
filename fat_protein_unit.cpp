@@ -5,10 +5,11 @@
 #include <ctime>
 #include <locale>
 #include <fstream>
+//#include <cstdio>
 
 //#include "fat_protein_unit.hpp"
 
-int main()
+int main()//int argc, char *argv[] )
 {
 /*FPU caluclation library
 
@@ -20,21 +21,46 @@ std::locale loc;
 loc = std::locale (loc, "", std::locale::ctype);; //("it_IT.UTF8");
 
 
+/*if( argc == 2 ){
+    printf("The argument supplied is %s\n", argv[1]);
+}
+else if( argc > 2 ) {
+    printf("Too many arguments supplied.\n");
+}
+else {
+printf("One argument expected.\n");
+}*/
+
+
 //const double time_of_ins = 240.;      // min - minutes of duration of insulin in the blood
 //TODO read from json/xml file
 //TODO make it const
+
+//read setting file
 std::ifstream infile("settings.config", std::ifstream::in);
+
+//check if there is the file
 if ( !infile ) {
     std::cerr << "not found the settings file!" << std::endl;
     exit(127);
 }
 else{
     infile.imbue(loc);
+
+    //check if the file is empty
     char c = infile.get();
-      while (infile.good()) {
-        //std::cout << c;
+    if (c != '/'){
+        std::cerr << "the settings file is empty!" << std::endl;
+        exit(127);
+    }
+    else{
+        //load the data in the file
+        while (infile.good()) {
+        //std::cout << c << " pippo" << std::endl;
         c = infile.get();
         //check if number or not and store it
+
+        }
     }
     infile.close();
 }
@@ -42,7 +68,7 @@ std::cin.imbue(loc);
 std::cout.imbue(loc);
 
 
-std::vector<int> sensitivity (24);      // mg/dl - per unit 
+std::vector<unsigned int> sensitivity (24);      // mg/dl - per unit
 std::vector<double> ratio_ins_carb (24.);    // gr/U - gr of sugar reduced by one unit of insulin
 std::vector<double> ratio_ins_fp_carb (24.);   // ratio_ins_fp_carb = ratio_ins_carb / 2
 
@@ -54,13 +80,13 @@ double fiber = 0.;                    // gr of fibers
 double fast_insulin = 0.;             // unit of insulin from carbohydrate
 double ins_correction = 0.;
 double slow_insulin = 0.;             // unit of insulin from fat and protein
-int glicemia = 100;
+unsigned int glicemia = 100;
 int time_of_inj = 0;              // min - minutes of injection of slow insulin
 double total_calories = 0.;
 double fp_calories = 0.;
 bool  output_error = true;
 
-for (int i = 0; i < 24; ++i)
+for (unsigned int i = 0; i < 24; ++i)
 {
     ratio_ins_carb[i]=12.;
     ratio_ins_fp_carb[i]=24.;
