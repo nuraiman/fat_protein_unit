@@ -1,16 +1,4 @@
-#include <iostream>
-#include <limits>
-#include <iomanip>
-#include <vector>
-#include <ctime>
-#include <locale>
-#include <fstream>
-//#include <cstdio>
-
 #include "fat_protein_unit.hpp"
-
-
-
 
 bool policy_food(double &food_type){
 bool result = false;
@@ -63,6 +51,78 @@ bool read_glycemia(unsigned int &glycemia)
         output_error = false;
     }
     return output_error;
+}
+
+void calc_fast_ins(double &fast_insulin, double carbohydrate, double curr_ratio_ins_carb)
+{
+    fast_insulin = carbohydrate / curr_ratio_ins_carb;
+
+    if (std::isnan(fast_insulin))
+    {
+        std::cerr << "Error: current ratio insulin-carbohydrates is zero!!" << std::endl;
+        exit(127);
+    }
+}
+
+void calc_correction( double &ins_correction, unsigned int glycemia, unsigned int curr_sensitivity)
+{
+    if ((glycemia - 140) > 0)
+    {
+        ins_correction = (glycemia - 100) / curr_sensitivity;
+        if (std::isnan(ins_correction))
+        {
+            std::cerr << "Error: current sensitivity is zero!!" << std::endl;
+            exit(127);
+        }
+    }
+    else ins_correction = 0.;
+}
+
+
+
+//double calc_slow_ins()
+
+unsigned int injection_time (double fpu)
+{
+    unsigned int time_of_inj = 0;
+if ( fpu > 4. )
+{
+    time_of_inj = 8;
+}
+else
+{
+    if ( fpu > 3. )
+    {
+        time_of_inj = 5;
+    }
+    else
+    {
+        if ( fpu > 2. )
+        {
+            time_of_inj = 4;
+        }
+        else
+        {
+            if ( fpu > 1. )
+            {
+                time_of_inj = 3;
+            }
+            else
+            {
+                if ( fpu == 0. )
+                {
+                    time_of_inj = 0;
+                }
+                else
+                {
+                    time_of_inj = 2;
+                }
+            }
+        }
+    }
+}
+
+return time_of_inj;
 }
 
 int main()//int argc, char *argv[] )
@@ -137,7 +197,7 @@ double fast_insulin = 0.;             // unit of insulin from carbohydrate
 double ins_correction = 0.;
 double slow_insulin = 0.;             // unit of insulin from fat and protein
 unsigned int glycemia = 100;
-int time_of_inj = 0;              // min - minutes of injection of slow insulin
+unsigned int time_of_inj = 0;              // min - minutes of injection of slow insulin
 double total_calories = 0.;
 double fp_calories = 0.;
 bool  output_error = true;
@@ -194,15 +254,12 @@ std::cout << " Fiber:" << fiber << " g" << std::endl;
 std::cout << " Glicemia:" << glycemia << " mg/dl" << std::endl;
 std::cout << " =========================================================== " << std::endl;
 ////////////////////////////////////////////////////////////////
-// caculations
+// calculations
 ////////////////////////////////////////////////////////////////
 
-fast_insulin = carbohydrate / ratio_ins_carb[ltm->tm_hour];
+calc_fast_ins(fast_insulin, carbohydrate, ratio_ins_carb[ltm->tm_hour]);
 
-if ((glycemia - 140) > 0)
-{
-    ins_correction = (glycemia - 100) / sensitivity[ltm->tm_hour];
-}
+calc_correction( ins_correction, glycemia, sensitivity[ltm->tm_hour]);
 
 // table fo calories vs carbohydrates, fat and proteins
 // carbohydrates: 1g = 4 kcal
@@ -219,42 +276,7 @@ total_calories = fp_calories + (4. * carbohydrate);
 fpu = fp_calories / 100.;  //TODO or divided by sensitivity ??
 
 //TODO remake in a decent way
-if ( fpu > 4. )
-{
-    time_of_inj = 8;
-}
-else
-{
-    if ( fpu > 3. )
-    {
-        time_of_inj = 5;
-    }
-    else
-    {
-        if ( fpu > 2. )
-        {
-            time_of_inj = 4;
-        }
-        else
-        {
-            if ( fpu > 1. )
-            {
-                time_of_inj = 3;
-            }
-            else
-            {
-                if ( fpu == 0. )
-                {
-                    time_of_inj = 0;
-                }
-                else
-                {
-                    time_of_inj = 2;
-                }
-            }
-        }
-    }
-}
+ time_of_inj = injection_time (fpu);
 
 //TODO automaticcaly detect , or .
 

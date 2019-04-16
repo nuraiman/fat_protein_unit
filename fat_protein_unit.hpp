@@ -3,12 +3,20 @@
 #include <iomanip>
 #include <vector>
 #include <ctime>
+#include <locale>
+#include <fstream>
+#include<cmath>
 
 bool policy_food(double &food_type);
 bool policy_glycemia(unsigned int &glycemia);
 
 bool read_food_type(double &food_type);
 bool read_glycemia(unsigned int &glycemia);
+
+unsigned int injection_time (double fpu);
+
+void calc_fast_ins(double &fast_insulin, double carbohydrate, double curr_ratio_ins_carb);
+void calc_correction( double &ins_correction, unsigned int glycemia, unsigned int curr_sensitivity);
 
 /*class fat_protein_unit
 {
