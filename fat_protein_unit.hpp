@@ -4,12 +4,11 @@
 #include <vector>
 #include <ctime>
 
-bool policy_food(double food_type);
-bool policy_glycemia(unsigned int glycemia);
+bool policy_food(double &food_type);
+bool policy_glycemia(unsigned int &glycemia);
 
-bool read_food_type(double food_type);
-
-bool read_glycemia(unsigned int glycemia);
+bool read_food_type(double &food_type);
+bool read_glycemia(unsigned int &glycemia);
 
 /*class fat_protein_unit
 {

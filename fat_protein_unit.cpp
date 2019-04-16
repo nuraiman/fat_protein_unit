@@ -12,9 +12,8 @@
 
 
 
-bool policy_food(double food_type){
+bool policy_food(double &food_type){
 bool result = false;
-
 if (!(std::cin >> food_type) or food_type < 0. )
     result = true;
 
@@ -22,7 +21,7 @@ return result;
 }
 
 
-bool policy_glycemia(unsigned int glycemia){
+bool policy_glycemia(unsigned int &glycemia){
 bool result = false;
 
 if (!(std::cin >> glycemia) or glycemia <= 10 or glycemia > 650)
@@ -32,7 +31,7 @@ return result;
 }
 
 
-bool read_food_type(double food_type)
+bool read_food_type(double &food_type)
 {
     bool output_error;
     if ( policy_food(food_type) )
@@ -49,7 +48,7 @@ bool read_food_type(double food_type)
     return output_error;
 }
 
-bool read_glycemia(unsigned int glycemia)
+bool read_glycemia(unsigned int &glycemia)
 {
     bool output_error;
         if (policy_glycemia(glycemia))
