@@ -7,7 +7,64 @@
 #include <fstream>
 //#include <cstdio>
 
-//#include "fat_protein_unit.hpp"
+#include "fat_protein_unit.hpp"
+
+
+
+
+bool policy_food(double food_type){
+bool result = false;
+
+if (!(std::cin >> food_type) or food_type < 0. )
+    result = true;
+
+return result;
+}
+
+
+bool policy_glycemia(unsigned int glycemia){
+bool result = false;
+
+if (!(std::cin >> glycemia) or glycemia <= 10 or glycemia > 650)
+    result = true;
+
+return result;
+}
+
+
+bool read_food_type(double food_type)
+{
+    bool output_error;
+    if ( policy_food(food_type) )
+    {
+        output_error = true;
+        std::cerr << "Please enter positive numbers only." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    else
+    {
+        output_error = false;
+    }
+    return output_error;
+}
+
+bool read_glycemia(unsigned int glycemia)
+{
+    bool output_error;
+        if (policy_glycemia(glycemia))
+    {
+        output_error = true;
+        std::cerr << "Please enter integer positive numbers only." << std::endl;
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+    else
+    {
+        output_error = false;
+    }
+    return output_error;
+}
 
 int main()//int argc, char *argv[] )
 {
@@ -80,7 +137,7 @@ double fiber = 0.;                    // gr of fibers
 double fast_insulin = 0.;             // unit of insulin from carbohydrate
 double ins_correction = 0.;
 double slow_insulin = 0.;             // unit of insulin from fat and protein
-unsigned int glicemia = 100;
+unsigned int glycemia = 100;
 int time_of_inj = 0;              // min - minutes of injection of slow insulin
 double total_calories = 0.;
 double fp_calories = 0.;
@@ -93,94 +150,39 @@ for (unsigned int i = 0; i < 24; ++i)
     sensitivity[i]=100;
 }
 
-
-
-
-
-
 //TODO remake with a templatized function
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Carbohydrates: " << std::endl;
-    if (!(std::cin >> carbohydrate) or carbohydrate < 0. )
-    {
-        output_error = true;
-        std::cerr << "Please enter positive numbers only." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        output_error = false;
-    }
+    output_error = read_food_type(carbohydrate);
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Proteins: " << std::endl;
-    if (!(std::cin >> protein) or protein < 0. )
-    {
-        output_error = true;
-        std::cerr << "Please enter positive numbers only." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        output_error = false;
-    }
+    output_error = read_food_type(protein);
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Fat: " << std::endl;
-    if (!(std::cin >> fat) or fat < 0. )
-    {
-        output_error = true;
-        std::cerr << "Please enter positive numbers only." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        output_error = false;
-    }
+    output_error = read_food_type(fat);
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Soluble Fibers: (put 0 if you do not know)" << std::endl;
-    if (!(std::cin >> fiber) or fiber < 0. )
-    {
-        output_error = true;
-        std::cerr << "Please enter positive numbers only." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        output_error = false;
-    }
+    output_error = read_food_type(fiber);
 }
 
 output_error = true;
 while (output_error==true)
 {
-    std::cout << " Level of glicemia in mg/dl: " << std::endl;
-    if (!(std::cin >> glicemia) or glicemia <= 10 or glicemia > 650)
-    {
-        output_error = true;
-        std::cerr << "Please enter integer positive numbers only." << std::endl;
-        std::cin.clear();
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    }
-    else
-    {
-        output_error = false;
-    }
+    std::cout << " Level of glycemia in mg/dl: " << std::endl;
+    output_error = read_glycemia(glycemia);
 }
 
 std::cout << " =========================================================== " << std::endl;
@@ -190,7 +192,7 @@ std::cout << " Carbohydrates:" << carbohydrate << " g" << std::endl;
 std::cout << " Proteins:" << protein << " g" << std::endl;
 std::cout << " Fat:" << fat << " g" << std::endl;
 std::cout << " Fiber:" << fiber << " g" << std::endl;
-std::cout << " Glicemia:" << glicemia << " mg/dl" << std::endl;
+std::cout << " Glicemia:" << glycemia << " mg/dl" << std::endl;
 std::cout << " =========================================================== " << std::endl;
 ////////////////////////////////////////////////////////////////
 // caculations
@@ -198,9 +200,9 @@ std::cout << " =========================================================== " << 
 
 fast_insulin = carbohydrate / ratio_ins_carb[ltm->tm_hour];
 
-if ((glicemia - 140) > 0)
+if ((glycemia - 140) > 0)
 {
-    ins_correction = (glicemia - 100) / sensitivity[ltm->tm_hour];
+    ins_correction = (glycemia - 100) / sensitivity[ltm->tm_hour];
 }
 
 // table fo calories vs carbohydrates, fat and proteins
