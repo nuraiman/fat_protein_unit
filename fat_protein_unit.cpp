@@ -78,7 +78,17 @@ void calc_correction( double &ins_correction, unsigned int glycemia, unsigned in
     else ins_correction = 0.;
 }
 
+void fpf_calories ( double &fp_calories, double protein, double fat, double fiber){
+    fp_calories = (4. * protein) + ( 9. * fat ) + (2. * fiber);
+}
 
+void calc_slow_ins(double &slow_insulin, double protein, double fat, double fiber, double ratio_ins_fp_carb) {
+slow_insulin = (protein + (2.25 * fat) + (0.5 * fiber) ) / ratio_ins_fp_carb; //(fp_calories / 4.) / ratio_ins_fp_carb
+}
+
+void tot_calories(double &total_calories, double fp_calories, double carbohydrate){
+    total_calories = fp_calories + (4. * carbohydrate);
+}
 
 //double calc_slow_ins()
 
@@ -268,11 +278,14 @@ calc_correction( ins_correction, glycemia, sensitivity[ltm->tm_hour]);
 // fiber: 1g = 2 kcal only in case of soluble fiber
 
 //amount of calories from fat and proteins
-fp_calories = (4. * protein) + ( 9. * fat ) + (2. * fiber);
 
-slow_insulin = (protein + (2.25 * fat) + (0.5 * fiber) ) / ratio_ins_fp_carb[ltm->tm_hour]; //(fp_calories / 4.) / ratio_ins_fp_carb
+fpf_calories( fp_calories, protein, fat, fiber );
+
+calc_slow_ins( slow_insulin, protein, fat, fiber, ratio_ins_fp_carb[ltm->tm_hour] );
 
 total_calories = fp_calories + (4. * carbohydrate);
+tot_calories(total_calories, fp_calories, carbohydrate);
+
 fpu = fp_calories / 100.;  //TODO or divided by sensitivity ??
 
 //TODO remake in a decent way

@@ -17,6 +17,9 @@ unsigned int injection_time (double fpu);
 
 void calc_fast_ins(double &fast_insulin, double carbohydrate, double curr_ratio_ins_carb);
 void calc_correction( double &ins_correction, unsigned int glycemia, unsigned int curr_sensitivity);
+void fpf_calories ( double &fp_calories, double protein, double fat, double fiber);
+void calc_slow_ins(double &slow_insulin, double protein, double fat, double fiber, double ratio_ins_fp_carb);
+void tot_calories(double &total_calories, double fp_calories, double carbohydrate);
 
 /*class fat_protein_unit
 {
