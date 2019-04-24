@@ -35,10 +35,10 @@ bool  output_error;
 time_t now;
 tm *ltm;
 
+std::locale loc;
 
 public:
 
-    std::locale loc;
     fat_protein_unit()
     {
         ratio_ins_carb.fill(12.);
