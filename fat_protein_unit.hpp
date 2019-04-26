@@ -61,6 +61,45 @@ public:
 
     ~fat_protein_unit(){};
 
+    inline double& get_fpu(){
+        return data.front();
+    }
+    inline double&  get_carbohydrate(){
+        return data[1];
+    }
+
+    inline double& get_proteins(){
+        return data[2];
+    }
+
+    inline double& get_fat(){
+        return data[3];
+    }
+
+    inline double& get_fibers(){
+        return data[4];
+    }
+
+    inline double& get_fast_ins(){
+        return data[5];
+    }
+
+    inline double& get_ins_corr(){
+        return data[6];
+    }
+
+    inline double& get_slow_ins(){
+        return data[7];
+    }
+
+    inline double& get_tot_cal(){
+        return data[8];
+    }
+
+    inline double& get_fp_cal(){
+        return data.back();
+    }
+
     //read setting file
     //TODO read from json/xml file
     void set_file_settings(){
@@ -98,28 +137,28 @@ else{
     while (output_error==true)
 {
     std::cout << " Quantity in grams of Carbohydrates: " << std::endl;
-    output_error = read_food_type(data[1]); //carbohydrate
+    output_error = read_food_type(get_carbohydrate()); //carbohydrate
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Proteins: " << std::endl;
-    output_error = read_food_type(data[2]); //protein
+    output_error = read_food_type(get_proteins()); //protein
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Fat: " << std::endl;
-    output_error = read_food_type(data[3]); //fat
+    output_error = read_food_type(get_fat()); //fat
 }
 
 output_error = true;
 while (output_error==true)
 {
     std::cout << " Quantity in grams of Soluble Fibers: (put 0 if you do not know)" << std::endl;
-    output_error = read_food_type(data[4]); //fiber
+    output_error = read_food_type(get_fibers()); //fiber
 }
 
 output_error = true;
@@ -135,10 +174,10 @@ void get_input(){
     std::cout << " =========================================================== " << std::endl;
     std::cout << " Input data:" << std::endl;
     std::cout << " =========================================================== " << std::endl;
-    std::cout << " Carbohydrates:" << data[1] << " g" << std::endl; //carbohydrate
-    std::cout << " Proteins:" << data[2] << " g" << std::endl; //protein
-    std::cout << " Fat:" << data[3] << " g" << std::endl; //fat
-    std::cout << " Fiber:" << data[4] << " g" << std::endl; //fiber
+    std::cout << " Carbohydrates:" << get_carbohydrate() << " g" << std::endl; //carbohydrate
+    std::cout << " Proteins:" << get_proteins() << " g" << std::endl; //protein
+    std::cout << " Fat:" << get_fat() << " g" << std::endl; //fat
+    std::cout << " Fiber:" << get_fibers() << " g" << std::endl; //fiber
     std::cout << " Glicemia:" << glycemia << " mg/dl" << std::endl;
     std::cout << " =========================================================== " << std::endl;
     }
@@ -197,7 +236,7 @@ bool read_glycemia(unsigned int &glycemia)
 }
 
 void calc_fast_ins(){
-    calc_fast_ins( data[5], data[1], ratio_ins_carb[ltm->tm_hour]);//fast_insulin,carbohydrate
+    calc_fast_ins( get_fast_ins(), get_carbohydrate(), ratio_ins_carb[ltm->tm_hour]);//fast_insulin,carbohydrate
 }
 
 void calc_fast_ins(double &fast_insulin, double carbohydrate, double curr_ratio_ins_carb)
@@ -213,7 +252,7 @@ void calc_fast_ins(double &fast_insulin, double carbohydrate, double curr_ratio_
 
 
 void calc_correction(){
-    calc_correction( data[6], glycemia, sensitivity[ltm->tm_hour]); //ins_correction
+    calc_correction( get_ins_corr(), glycemia, sensitivity[ltm->tm_hour]); //ins_correction
 }
 
 void calc_correction( double &ins_correction, unsigned int glycemia, unsigned int curr_sensitivity)
@@ -231,7 +270,7 @@ void calc_correction( double &ins_correction, unsigned int glycemia, unsigned in
 }
 
 void calc_fpf_calories (){
-    fpf_calories (data.back(), data[2], data[3], data[4]); //fp_calories, protein,fat,fiber
+    fpf_calories (get_fp_cal(), get_proteins(), get_fat(), get_fibers()); //fp_calories, protein,fat,fiber
 }
 
 // table of calories vs carbohydrates, fat and proteins
@@ -245,7 +284,7 @@ void fpf_calories ( double &fp_calories, double protein, double fat, double fibe
 }
 
 void calc_slow_ins() {
-    calc_slow_ins(data[7], data[2], data[3], data[4], ratio_ins_fp_carb[ltm->tm_hour]); //slow_insulin, protein,fat,fiber
+    calc_slow_ins(get_slow_ins(), get_proteins(), get_fat(), get_fibers(), ratio_ins_fp_carb[ltm->tm_hour]); //slow_insulin, protein,fat,fiber
 }
 
 void calc_slow_ins(double &slow_insulin, double protein, double fat, double fiber, double ratio_ins_fp_carb) {
@@ -253,16 +292,16 @@ slow_insulin = (protein + (2.25 * fat) + (0.5 * fiber) ) / ratio_ins_fp_carb; //
 }
 
 void calc_fpu(){
-    calc_fpu(data.front(), data.back()); //fpu,fp_calories
+    calc_fpu(get_fpu(), get_fp_cal()); //fpu,fp_calories
 }
 
 //TODO or divided by sensitivity ??
-void calc_fpu(double &fpu, double fp_calories){
+void calc_fpu(double &fpu, double &fp_calories){
     fpu = fp_calories / 100.; 
 }
 
 void tot_calories(){
-    tot_calories(data[8], data.back(), data[1]);//total_calories, fp_calories,carbohydrate
+    tot_calories(get_tot_cal(), get_fp_cal(), get_carbohydrate());//total_calories, fp_calories,carbohydrate
 }
 
 void tot_calories(double &total_calories, double fp_calories, double carbohydrate){
@@ -270,7 +309,7 @@ void tot_calories(double &total_calories, double fp_calories, double carbohydrat
 }
 
 void injection_time (){
-    injection_time (time_of_inj, data.front());//fpu
+    injection_time (time_of_inj, get_fpu());//fpu
 }
 
 //TODO remake in a decent way
@@ -317,21 +356,21 @@ else
 //TODO automatically detect , or .
 void  get_output(){
 std::cout << " =========================================================== " << std::endl;
-std::cout << " Bolus Insulin to inject now: " << std::setprecision(4) << std::setfill('0') << data[5] << " Units " << std::endl; //fast_insulin
-std::cout << " Correction Insulin to inject now: " << data[6] << " Units " << std::endl; //ins_correction
+std::cout << " Bolus Insulin to inject now: " << std::setprecision(4) << std::setfill('0') << get_fast_ins() << " Units " << std::endl; //fast_insulin
+std::cout << " Correction Insulin to inject now: " << get_ins_corr() << " Units " << std::endl; //ins_correction
 std::cout << " =========================================================== " << std::endl;
-std::cout << " Total Insulin to inject now: " << data[5] + data[6] << " Units " << std::endl; //fast_insulin, ins_correction
+std::cout << " Total Insulin to inject now: " << get_fast_ins() + get_ins_corr() << " Units " << std::endl; //fast_insulin, ins_correction
 std::cout << " =========================================================== " << std::endl;
 std::cout << " Sensitivity used: " << sensitivity[ltm->tm_hour] << " mg/dl per Unit  " << std::endl;
 std::cout << " Ratio Carbohydrate/Insulin used: " << ratio_ins_carb[ltm->tm_hour] << " grams per Unit  " << std::endl;
 std::cout << " It is " << ltm->tm_hour << " o'clock" << std::endl;
 std::cout << " =========================================================== " << std::endl;
-std::cout << " FPU eaten: " << data.front() << std::endl; //fpu
-std::cout << " Total amount of energy eaten: " << data[8] << " kcal - " << 4.182 * data[8] << " kJoule " << std::endl; //total_calories
+std::cout << " FPU eaten: " << get_fpu() << std::endl; //fpu
+std::cout << " Total amount of energy eaten: " << get_tot_cal() << " kcal - " << 4.182 * get_tot_cal() << " kJoule " << std::endl; //total_calories
 std::cout << " =========================================================== " << std::endl;
-std::cout << " Bolus Insulin to inject delayed: " << data[7] << " Units over " << time_of_inj  << " Hours" << std::endl; //slow_insulin
+std::cout << " Bolus Insulin to inject delayed: " << get_slow_ins() << " Units over " << time_of_inj  << " Hours" << std::endl; //slow_insulin
 std::cout << " =========================================================== " << std::endl;
-std::cout << " Total Insulin to inject: " << data[5] + data[6]  + data[7] << " Units " << std::endl; //fast_insulin, ins_correction,slow_insulin
+std::cout << " Total Insulin to inject: " << get_fast_ins() + get_ins_corr()  + get_slow_ins() << " Units " << std::endl; //fast_insulin, ins_correction,slow_insulin
 std::cout << " =========================================================== " << std::endl;
 }  
 };
