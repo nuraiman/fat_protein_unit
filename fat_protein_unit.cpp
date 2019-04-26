@@ -20,31 +20,31 @@ printf("One argument expected.\n");
 
 //const double time_of_ins = 240.;      // min - minutes of duration of insulin in the blood
 
-fat_protein_unit nur;
+fat_protein_unit eval;
 
 //read setting file
-nur.set_file_settings();
+eval.set_file_settings();
 
-nur.set_input();
-nur.get_input();
+eval.set_input();
+eval.print_input();
 ////////////////////////////////////////////////////////////////
 // calculations
 ////////////////////////////////////////////////////////////////
 
-nur.calc_fast_ins();
+eval.calc_fast_ins();
 
-nur.calc_correction();
+eval.calc_correction();
 
 //amount of calories from fat and proteins
-nur.calc_fpf_calories();
+eval.calc_fpf_calories();
 
-nur.calc_slow_ins();
+eval.calc_slow_ins();
 
-nur.tot_calories();
+eval.tot_calories();
 
-nur.calc_fpu();
+eval.calc_fpu();
 
-nur.injection_time ();
+eval.injection_time ();
 
-nur.get_output();
+eval.print_output();
 }
